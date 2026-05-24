@@ -48,6 +48,7 @@ E-mail: admin@sistema.com
 Senha:  Admin@123
 
 ## Estrutura do projeto
+```txt
 src/
 ├── Api/
 │   ├── Controllers/
@@ -68,7 +69,7 @@ src/
 ├── Persistence/
 ├── Repositories/
 └── Services/
-
+```
 ## Decisões técnicas
 
 **Clean Architecture** — separação em 4 camadas com dependências apontando sempre para o Domain, garantindo que regras de negócio não dependam de infraestrutura.
