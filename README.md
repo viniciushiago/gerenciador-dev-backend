@@ -66,9 +66,9 @@ src/
 │   ├── Enums/
 │   └── Interfaces/
 └── Infrastructure/
-├── Persistence/
-├── Repositories/
-└── Services/
+  ├── Persistence/
+  ├── Repositories/
+  └── Services/
 ```
 ## Decisões técnicas
 
