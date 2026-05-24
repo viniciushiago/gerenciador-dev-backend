@@ -90,4 +90,6 @@ src/
 - Multi-tenancy
 - Perfil de administrador
 - Testes unitários e de integração
-- Docker
+- Padronizar retorno de todos os endpoints com DTOs,
+  incluindo os Commands de criação e atualização,
+  evitando expor campos internos das entidades
