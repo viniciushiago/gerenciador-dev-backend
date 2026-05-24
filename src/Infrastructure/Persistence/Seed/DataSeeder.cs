@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Persistence.Seed
 {
-    // Infrastructure/Persistence/Seed/DataSeeder.cs
     public static class DataSeeder
     {
         public static async Task SeedAsync(AppDbContext context)
@@ -22,7 +21,7 @@ namespace Infrastructure.Persistence.Seed
                 context.Estados.AddRange(sc, rj, mg);
                 await context.SaveChangesAsync();
 
-                var spCidade = Cidade.Criar("São Paulo", sc.Id);
+                var spCidade = Cidade.Criar("Itajaí", sc.Id);
                 var rjCidade = Cidade.Criar("Rio de Janeiro", rj.Id);
                 var mgCidade = Cidade.Criar("Belo Horizonte", mg.Id);
 

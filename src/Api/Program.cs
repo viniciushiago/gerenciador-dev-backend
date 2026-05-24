@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -64,9 +65,13 @@ builder.Services.AddCors(opcoes =>
 {
     opcoes.AddPolicy("Desenvolvimento", politica =>
     {
-        politica.WithOrigins("http://localhost:3000")
-               .AllowAnyHeader()
-               .AllowAnyMethod();
+        politica.WithOrigins(
+            "http://localhost:3000",
+            "https://localhost:3000",
+            "http://localhost:8080",
+            "https://localhost:7032"
+            ).AllowAnyHeader()
+            .AllowAnyMethod();
     });
 });
 
@@ -74,13 +79,11 @@ var app = builder.Build();
 
 app.UseMiddleware<ErrorHandlingMiddleware>();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
 
-app.UseHttpsRedirection();
+app.UseSwagger();
+app.UseSwaggerUI();
+
+// app.UseHttpsRedirection();
 app.UseCors("Desenvolvimento");
 app.UseAuthentication();
 app.UseAuthorization();
@@ -89,6 +92,7 @@ app.MapControllers();
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    context.Database.Migrate();
     await DataSeeder.SeedAsync(context);
 }
 

@@ -1,30 +1,36 @@
-version: '3.8'
-
 services:
-  sqlserver:
-    image: mcr.microsoft.com/mssql/server:2022-latest
-    environment:
-      SA_PASSWORD: "Senha@123"
-      ACCEPT_EULA: "Y"
-    ports:
-      - "1433:1433"
-    volumes:
-      - sqldata:/var/lib/mssql/data
+    sqlserver:
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        environment:
+            SA_PASSWORD: "Senha@123"
+            ACCEPT_EULA: "Y"
+        ports:
+            - "1433:1433"
+        volumes:
+            - sqldata:/var/opt/mssql
+        healthcheck:
+            test: [ "CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P Senha@123 -Q 'SELECT 1' -No" ]
+            interval: 15s
+            timeout: 10s
+            retries: 10
+            start_period: 45s
 
-  backend:
-    build:
-      context: ./src
-      dockerfile: Dockerfile
-    ports:
-      - "8080:8080"
-    environment:
-      - ConnectionStrings__Default=Server=sqlserver;Database=GerenciadorDevDb;User Id=sa;Password=Senha@123;TrustServerCertificate=True;
-      - Jwt__Key=chave-secreta-minimo-32-caracteres-aqui
-      - Jwt__Issuer=GerenciadorDev
-      - Jwt__Audience=GerenciadorDev
-      - Jwt__ExpiresInHours=8
-    depends_on:
-      - sqlserver
+    backend:
+        build:
+            context: ./src
+            dockerfile: Dockerfile
+        ports:
+            - "8080:8080"
+        environment:
+            - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=GerenciadorDev;User Id=sa;Password=Senha@123;TrustServerCertificate=True;
+            - Jwt__Key=chave-secreta-minimo-32-caracteres-aqui
+            - Jwt__Issuer=GerenciadorDev
+            - Jwt__Audience=GerenciadorDev
+            - Jwt__ExpiresInHours=8
+        depends_on:
+            sqlserver:
+                condition: service_healthy
+        restart: on-failure
 
 volumes:
-  sqldata:
+    sqldata:
